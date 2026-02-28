@@ -54,7 +54,7 @@ def datubazes_izveide():
         )
         kursors.execute(
             "INSERT INTO users (username, password, role, created_at) VALUES (?, ?, ?, ?)",
-            ('lietotajs', 'lasitajs123', 'user', datetime.now().isoformat())
+            ('user', 'user123', 'user', datetime.now().isoformat())
         )
 
     savienojums.commit()
