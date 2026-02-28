@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ t.title }} - {{ user.username }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="language-bar">
+        <a href="/profile?username={{ user.username }}&lang=lv">Latviešu</a> | 
+        <a href="/profile?username={{ user.username }}&lang=en">English</a>
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <h2>{{ t.welcome }}, {{ user.username }}!</h2>
+            <p><strong>{{ t.role }}:</strong> 
+                {% if user.role == 'admin' %}
+                    {{ t.admin_role }}
+                {% else %}
+                    {{ t.user_role }}
+                {% endif %}
+            </p>
+            <p><strong>{{ t.member_since }}:</strong> {{ user.created_at[:10] }}</p>
+        </div>
+
+        <div class="stats-grid mb-20">
+            <div class="stat-card">
+                <div class="stat-value">{{ books_count }}</div>
+                <div class="stat-label">{{ t.books }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ tobuy_count }}</div>
+                <div class="stat-label">{{ t.tobuy }}</div>
+            </div>
+        </div>
+
+        <div class="menu">
+            <a href="/books?lang={{ lang }}"><button class="btn btn-primary">{{ t.books }}</button></a>
+            <a href="/tobuy?lang={{ lang }}"><button class="btn btn-primary">{{ t.tobuy }}</button></a>
+            {% if user.role == 'admin' %}
+            <a href="/admin?lang={{ lang }}"><button class="btn btn-primary">{{ t.admin }}</button></a>
+            {% endif %}
+            <a href="/logout"><button class="btn btn-secondary">🚪 {{ t.logout }}</button></a>
+        </div>
+
+        {% if request.args.get('success') %}
+        <div class="message message-success">{{ t.success }}</div>
+        {% endif %}
+        
+        {% if request.args.get('error') == 'empty_fields' %}
+        <div class="message message-error">{{ t.error_empty }}</div>
+        {% endif %}
+        
+        {% if request.args.get('error') == 'book_exists' %}
+        <div class="message message-error">{{ t.error_exists }}</div>
+        {% endif %}
+
+        <div class="profile-card">
+            <h3>{{ t.add_book }}</h3>
+            <form action="/books/add?lang={{ lang }}" method="post">
+                <div class="form-group">
+                    <label>{{ t.author }}:</label>
+                    <input type="text" name="author" placeholder="{{ t.author_placeholder }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>{{ t.book_title }}:</label>
+                    <input type="text" name="title" placeholder="{{ t.title_placeholder }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>{{ t.genre }}:</label>
+                    <input type="text" name="genre" placeholder="{{ t.genre_placeholder }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>{{ t.status }}:</label>
+                    <select name="status" class="status-select">
+                        <option value="Read">{{ t.status_read }}</option>
+                        <option value="Not read">{{ t.status_not_read }}</option>
+                        <option value="To buy">{{ t.status_tobuy }}</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">{{ t.add }}</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

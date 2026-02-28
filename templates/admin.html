@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ t.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="language-bar">
+        <a href="/admin?lang=lv">Latviešu</a> | 
+        <a href="/admin?lang=en">English</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <a href="/profile?username={{ session.username }}&lang={{ lang }}" class="btn-back">← {{ t.back }}</a>
+            </div>
+            <div class="header-title">{{ t.title }}</div>
+            <div></div>
+        </div>
+
+        <div class="admin-panel">
+            <h3>{{ t.users }}</h3>
+            <table>
+                <tr>
+                    <th>{{ t.id }}</th>
+                    <th>{{ t.username }}</th>
+                    <th>{{ t.role }}</th>
+                    <th>{{ t.created }}</th>
+                    <th>{{ t.books }}</th>
+                    <th>{{ t.tobuy }}</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        {% if user.role == 'admin' %}
+                            <span class="book-status status-read">{{ t.admin_role }}</span>
+                        {% else %}
+                            <span class="book-status status-notread">{{ t.user_role }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at[:10] if user.created_at else '' }}</td>
+                    <td>{{ user.books_count }}</td>
+                    <td>{{ user.tobuy_count }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="admin-panel mt-20">
+            <h3>{{ t.add_user }}</h3>
+            
+            <form action="/admin/add_user?lang={{ lang }}" method="post">
+                <div class="form-group">
+                    <label>{{ t.username }}:</label>
+                    <input type="text" name="username" required minlength="3">
+                </div>
+                
+                <div class="form-group">
+                    <label>{{ t.password }}:</label>
+                    <input type="password" name="password" required minlength="4">
+                </div>
+                
+                <div class="form-group">
+                    <label>{{ t.role_select }}:</label>
+                    <select name="role" required>
+                        <option value="user">{{ t.user_role }}</option>
+                        <option value="admin">{{ t.admin_role }}</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">{{ t.add }}</button>
+            </form>
+        </div>
+
+        <div class="stats-grid mt-20">
+            <div class="stat-card">
+                <div class="stat-value">{{ users|length }}</div>
+                <div class="stat-label">{{ t.users }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">
+                    {{ users|selectattr('role', 'equalto', 'admin')|list|length }}
+                </div>
+                <div class="stat-label">{{ t.admin_role }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">
+                    {{ users|selectattr('role', 'equalto', 'user')|list|length }}
+                </div>
+                <div class="stat-label">{{ t.user_role }}</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

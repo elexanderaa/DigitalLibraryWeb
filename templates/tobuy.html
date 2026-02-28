@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ t.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="language-bar">
+        <a href="/tobuy?lang=lv">Latviešu</a> | 
+        <a href="/tobuy?lang=en">English</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <a href="/profile?username={{ session.username }}&lang={{ lang }}" class="btn-back">← {{ t.back }}</a>
+            </div>
+            <div class="header-title">🛒 {{ t.title }}</div>
+            <div></div>
+        </div>
+
+        {% if books %}
+        <table>
+            <tr>
+                <th>{{ t.title_col }}</th>
+                <th>{{ t.author }}</th>
+                <th>{{ t.genre }}</th>
+                <th>{{ t.actions }}</th>
+            </tr>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.genre }}</td>
+                <td>
+                    <a href="/tobuy/move/{{ book.id }}?lang={{ lang }}" 
+                       class="action-btn action-btn-move"
+                       onclick="return confirm('Pārvietot uz galveno sarakstu?')">
+                        {{ t.move }}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="stats-grid mt-20">
+            <div class="stat-card">
+                <div class="stat-value">{{ books|length }}</div>
+                <div class="stat-label">{{ t.total_books }}</div>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="no-results">
+            {{ t.no_books }}
+            <div class="mt-20">
+                <a href="/profile?username={{ session.username }}&lang={{ lang }}" class="btn btn-primary">
+                    {{ t.add_book }}
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

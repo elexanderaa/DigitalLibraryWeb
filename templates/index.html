@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ t.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="language-bar">
+        <a href="/?lang=lv">Latviešu</a> | 
+        <a href="/?lang=en">English</a>
+    </div>
+
+    <div class="container-small">
+        <h1>{{ t.welcome }}</h1>
+        
+        {% if error %}
+        <div class="message message-error">{{ t.error }}</div>
+        {% endif %}
+                {% if error %}
+    <div class="error-message">{{ t.error2 }}</div>
+{% endif %}
+
+        
+        <h2>{{ t.login }}</h2>
+        <form action="/login?lang={{ lang }}" method="post">
+            <div class="form-group">
+                <label>{{ t.username }}</label>
+                <input type="text" name="username" placeholder="{{ t.username_placeholder }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>{{ t.password }}</label>
+                <input type="password" name="password" placeholder="{{ t.password_placeholder }}" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">{{ t.login }}</button>
+        </form>
+
+        <div class="divider"></div>
+        
+        <h2>{{ t.register }}</h2>
+        <form action="/register?lang={{ lang }}" method="post">
+            <div class="form-group">
+                <label>{{ t.username }} (min 3)</label>
+                <input type="text" name="username" placeholder="{{ t.username_placeholder }}" required minlength="3">
+            </div>
+            
+            <div class="form-group">
+                <label>{{ t.password }} (min 4)</label>
+                <input type="password" name="password" placeholder="{{ t.password_placeholder }}" required minlength="4">
+            </div>
+            
+            <div class="form-group">
+                <label>{{ t.password2 }}</label>
+                <input type="password" name="password2" placeholder="{{ t.password2_placeholder }}" required>
+            </div>
+            
+            <button type="submit" class="btn btn-secondary">{{ t.register }}</button>
+        </form>
+    </div>
+</body>
+</html>
